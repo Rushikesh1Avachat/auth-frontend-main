@@ -28,6 +28,7 @@ const PasswordStrength = ({ value = '' }) => {
       <div className="grid grid-cols-4 gap-2">
         {[...Array(4)].map((_, i) => (
           <div
+          key={i}
             className={`h-1 ${
               i < progressBars ? 'bg-cyan-700' : 'bg-gray-200'
             }`}
