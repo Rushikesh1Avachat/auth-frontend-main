@@ -1,56 +1,50 @@
-import axios from "axios";
+import axios from 'axios';
 import {
   generateTokensFromAccessToken,
   getRefreshToken,
-} from "../services/authService";
+} from '../services/authService';
 
 const axiosInstance = axios.create({
-  baseURL: `${import.meta.env.VITE_API_URL}/api/auth`,
+  baseURL: 'http://localhost:5500/api/auth',
   withCredentials: true,
+  // Include credential (Cookie)
 });
 
-// Request Interceptor
 axiosInstance.interceptors.request.use(
   (config) => {
-    const token = JSON.parse(localStorage.getItem("accessToken"));
+    let token = JSON.parse(localStorage.getItem('accessToken'));
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
     return config;
   },
-  (error) => Promise.reject(error)
+  (error) => {
+    return Promise.reject(error);
+  }
 );
 
-// Response Interceptor
 axiosInstance.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    console.log('Response =', response);
+    return response;
+  },
   async (error) => {
+    console.log('error =', error);
+
     const originalRequest = error.config;
-
-    if (
-      error.response?.status === 403 &&
-      !originalRequest._retry
-    ) {
-      originalRequest._retry = true;
-
-      try {
-        const refreshToken = getRefreshToken();
-        if (!refreshToken) return Promise.reject(error);
-
-        const newToken = await generateTokensFromAccessToken();
-
-        localStorage.setItem(
-          "accessToken",
-          JSON.stringify(newToken)
-        );
-
-        originalRequest.headers.Authorization = `Bearer ${newToken}`;
-        return axiosInstance(originalRequest);
-      } catch (err) {
-        return Promise.reject(err);
+    if (error.response.status === 403 && !originalRequest._retry) {
+      const refreshToken = getRefreshToken();
+      if (refreshToken) {
+        originalRequest._retry = true;
+        try {
+          const newToken = await generateTokensFromAccessToken();
+          axios.defaults.headers.common['Authorization'] = `Bearer ${newToken}`;
+          return axiosInstance(originalRequest);
+        } catch (error) {
+          return Promise.reject(error);
+        }
       }
     }
-
     return Promise.reject(error);
   }
 );
