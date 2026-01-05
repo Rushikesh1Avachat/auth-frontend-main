@@ -1,12 +1,12 @@
-import React from 'react';
-import PhoneOtp from '../../components/verifyOtp/phoneOtp';
-
-function VerifyPhoneOtp() {
+import React from "react";
+import PhoneOtp from "../../components/verifyOtp/PhoneOtp"
+const VerifyPhone = () => {
   return (
-    <>
+    <div>
       <PhoneOtp />
-    </>
+    </div>
   );
-}
+};
 
-export default VerifyPhoneOtp;
+export default VerifyPhone;
+
