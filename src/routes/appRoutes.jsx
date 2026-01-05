@@ -17,7 +17,6 @@ import {
 } from '../pages';
 import ProtectedRoutes from './protectedRoutes';
 import Unauthorize from '../pages/Unauthorize';
-import VerifyPhoneOtp from '../pages/auth/verifyPhone';
 
 const AppRoutes = () => {
   return (
@@ -43,7 +42,7 @@ const AppRoutes = () => {
           </Route>
         </Route>
 
-        {/* User Private Routes Admin */}
+        {/* Admin Private Routes */}
         <Route element={<ProtectedRoutes allowedRoles={['admin']} />}>
           <Route element={<UserLayout />}>
             <Route path="admin/profile" element={<AdminProfile />} />
@@ -51,7 +50,6 @@ const AppRoutes = () => {
           </Route>
         </Route>
 
-        {/* Page Not Found */}
         <Route path="unauthorize" element={<Unauthorize />} />
         <Route path="*" element={<PageNotFound />} />
       </Routes>
