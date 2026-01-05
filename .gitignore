@@ -6,10 +6,20 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
+
+# Environment variables
 .env
+.env.*
+!.env.example
+
+# Dependencies
 node_modules
+
+# Build outputs
 dist
 dist-ssr
+
+# Local config
 *.local
 
 # Editor directories and files
