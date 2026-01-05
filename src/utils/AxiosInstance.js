@@ -8,6 +8,8 @@ const axiosInstance = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL,
   withCredentials: true,
 });
+console.log(import.meta.env.VITE_API_BASE_URL , "from backend data call");
+
 
 axiosInstance.interceptors.request.use(
   (config) => {
