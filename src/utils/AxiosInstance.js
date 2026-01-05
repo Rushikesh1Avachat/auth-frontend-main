@@ -7,44 +7,39 @@ import {
 const axiosInstance = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL,
   withCredentials: true,
-  // Include credential (Cookie)
 });
 
 axiosInstance.interceptors.request.use(
   (config) => {
-    let token = JSON.parse(localStorage.getItem('accessToken'));
+    const token = JSON.parse(localStorage.getItem('accessToken'));
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
     return config;
   },
-  (error) => {
-    return Promise.reject(error);
-  }
+  (error) => Promise.reject(error)
 );
 
 axiosInstance.interceptors.response.use(
-  (response) => {
-    console.log('Response =', response);
-    return response;
-  },
+  (response) => response,
   async (error) => {
-    console.log('error =', error);
-
     const originalRequest = error.config;
-    if (error.response.status === 403 && !originalRequest._retry) {
-      const refreshToken = getRefreshToken();
-      if (refreshToken) {
-        originalRequest._retry = true;
-        try {
-          const newToken = await generateTokensFromAccessToken();
-          axios.defaults.headers.common['Authorization'] = `Bearer ${newToken}`;
-          return axiosInstance(originalRequest);
-        } catch (error) {
-          return Promise.reject(error);
-        }
+
+    if (
+      error.response?.status === 403 &&
+      !originalRequest._retry
+    ) {
+      originalRequest._retry = true;
+
+      try {
+        const newToken = await generateTokensFromAccessToken();
+        originalRequest.headers.Authorization = `Bearer ${newToken}`;
+        return axiosInstance(originalRequest);
+      } catch (err) {
+        return Promise.reject(err);
       }
     }
+
     return Promise.reject(error);
   }
 );
