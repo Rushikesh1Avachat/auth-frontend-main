@@ -5,7 +5,7 @@ import {
 } from '../services/authService';
 
 const axiosInstance = axios.create({
-  baseURL: 'http://localhost:5500/api/auth',
+  baseURL: import.meta.env.VITE_API_URL,
   withCredentials: true,
   // Include credential (Cookie)
 });
